@@ -1,31 +1,48 @@
 "use client";
-import React, {useState, useLayoutEffect} from "react";
+import React, { useState, useLayoutEffect } from "react";
+import Header from "@/components/Header";
+import { useSession } from "next-auth/react";
+import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "../SideBar";
-import Header from "../Header";
 
 export default function DefaultLayout({
-    children,
-
-} : {
-    children: React.ReactNode;
+  children,
+}: {
+  children: React.ReactNode;
 }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
 
-    return (
-        <div className="flex ">
-            {/* sidebar */}
-            <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
+  const publicRoutes = [
+    "/auth-page/signin",
+    "/auth-page/signup",
+    "/verify-email",
+    "/reset-password",
+    "/forget-password",
+  ];
 
-            <div className="relative flex flex-1 flex-col lg:ml-72.5">
-                {/* header */}
-                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-                <main>
-                    <div className="mx-auto max-w-screen-2xl p-4 dark:bg-[#121212] md:p-6 2xl:p-10">
-                    {children}
-                    </div>
-                </main>
+  useLayoutEffect(() => {
+    if (status === "unauthenticated" && !publicRoutes.includes(pathname)) {
+      router.push("/auth-page/signin");
+    }
+  }, [status, router, pathname]);
+
+  return (
+    <>
+      <div className="flex">
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <div className="relative flex flex-1 flex-col lg:ml-72.5">
+          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <main>
+            <div className="mx-auto max-w-screen-2xl p-4 dark:bg-[#121212] md:p-6 2xl:p-10">
+              {children}
             </div>
+          </main>
         </div>
-    )
+      </div>
+    </>
+  );
 }

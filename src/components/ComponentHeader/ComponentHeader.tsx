@@ -1,5 +1,5 @@
 "use client";
-//import Modal from "@/app/ui/modals/page";
+import Modal from "@/app/ui/modals/page";
 import React from "react";
 
 interface ComponentHeaderProps {
@@ -37,10 +37,10 @@ const ComponentHeader: React.FC<ComponentHeaderProps> = ({
         </nav>
       )}
 
-      
-       {/* id="my_modal_1"
+      <Modal
+        id="my_modal_1"
         title="Add New Molecule"
-        content={ */}
+        content={
           <>
             <form action="#">
               <div className="p-1">
@@ -96,9 +96,9 @@ const ComponentHeader: React.FC<ComponentHeaderProps> = ({
               </div>
             </form>
           </>
-       {/* } */}
-        {/*onCloseText="Close"*/}
-      
+        }
+        onCloseText="Close"
+      />
     </div>
   );
 };
